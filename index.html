@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#11101a">
+<title>Play & Rewards</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">WELCOME BACK</div>
+      <h1>Play & Rewards</h1>
+    </div>
+    <button class="avatar" onclick="showPage('profile')">👤</button>
+  </header>
+
+  <main id="home" class="page active">
+    <section class="balance hero">
+      <div class="label">ELIGIBLE COINS</div>
+      <div class="balance-number" id="homeBalance">0</div>
+      <div class="rupees" id="homeRupees">≈ ₹0</div>
+      <div class="balance-row"><span>Minimum withdrawal</span><b>12,000 🪙 = ₹1,200</b></div>
+    </section>
+    <div class="grid2">
+      <button class="action-card" onclick="showPage('ads')"><span>📺</span><b>Watch Ads</b><small>+200 coins / verified ad</small></button>
+      <button class="action-card" onclick="showPage('games')"><span>🎮</span><b>Play Games</b><small>Earn Game Points</small></button>
+    </div>
+    <section class="card">
+      <div class="section-title"><h2>Referral</h2><span id="refBadge" class="badge">Pending</span></div>
+      <p id="refText">Refer an eligible user. They must complete 10 verified ads before your 1,200-coin bonus is credited.</p>
+      <button class="primary" onclick="showPage('profile')">View Referral</button>
+    </section>
+    <section class="card">
+      <div class="section-title"><h2>Today's activity</h2></div>
+      <div class="stats">
+        <div><b id="statAds">0</b><span>Ads</span></div>
+        <div><b id="statRefs">0</b><span>Referrals</span></div>
+        <div><b id="statGames">0</b><span>Games</span></div>
+      </div>
+    </section>
+  </main>
+
+  <main id="ads" class="page">
+    <section class="card">
+      <div class="eyebrow">WATCH & EARN</div>
+      <h2>Ad cycle</h2>
+      <div class="progress"><i id="adProgress"></i></div>
+      <div class="progress-row"><span id="adCount">0 / 100</span><span>+200 🪙 / verified ad</span></div>
+      <p class="muted">Rewards are credited only after a real approved rewarded-ad event is verified by the backend.</p>
+      <button class="primary big" id="watchBtn" onclick="startRewardedAd()">▶ Watch rewarded ad</button>
+      <div id="adNotice" class="notice">After 25 verified ads, an eligible referral is required to unlock the next 25-ad section.</div>
+    </section>
+    <section class="card">
+      <div class="section-title"><h2>Cycle rules</h2></div>
+      <ul class="rules">
+        <li>100 ad opportunities per cycle.</li>
+        <li>Every legitimate completed rewarded event can credit 200 coins.</li>
+        <li>After each 25-ad milestone, the next section requires the referral condition.</li>
+        <li>Referral bonus: 1,200 coins after the referred user completes at least 10 verified ads.</li>
+      </ul>
+    </section>
+  </main>
+
+  <main id="games" class="page">
+    <section class="card game-hero">
+      <div class="game-icon">🎲</div>
+      <div><div class="eyebrow">GAME ZONE</div><h2>Ludo vs Computer</h2><p>Play for non-cash Game Points. No wagering.</p></div>
+    </section>
+    <div class="game-grid">
+      <button class="game-card" onclick="playGame('Ludo')">🎲<b>Ludo</b><small>vs Computer</small></button>
+      <button class="game-card" onclick="playGame('Snake')">🧠<b>Snake</b><small>Challenge</small></button>
+      <button class="game-card" onclick="playGame('Tap')">👆<b>Ludo</b><small>Quick game</small></button>
+      <button class="game-card" onclick="playGame('Snake')">🃏<b>Snake</b><small>Match cards</small></button>
+    </div>
+    <section class="card">
+      <div class="section-title"><h2>Game Points</h2><span class="badge">No cash value</span></div>
+      <div class="game-points" id="gamePoints">0</div>
+      <p class="muted">Game Points are separate from eligible reward coins and cannot be withdrawn or converted to money.</p>
+    </section>
+  </main>
+
+  <main id="profile" class="page">
+    <section class="profile-head">
+      <div class="profile-avatar">👤</div>
+      <div><h2>My Profile</h2><p class="muted">Member account</p></div>
+    </section>
+    <section class="card">
+      <div class="section-title"><h2>Balance</h2></div>
+      <div class="large-balance"><span id="profileBalance">0</span> 🪙</div>
+      <p id="profileRupees">≈ ₹0</p>
+      <button class="primary" onclick="withdraw()">Withdraw</button>
+      <div id="withdrawStatus" class="notice">Withdrawal unlocks at 12,000 eligible coins and after the required referral is verified.</div>
+    </section>
+    <section class="card">
+      <div class="section-title"><h2>Referral</h2><span class="badge">Unlimited invites</span></div>
+      <p>Your referral code: <b id="refCode">PLAY-0000</b></p>
+      <button class="secondary" onclick="copyReferral()">Copy referral code</button>
+      <button class="secondary" onclick="referDemo()">Simulate eligible referral</button>
+      <p class="muted">Demo only. In production, a referral counts only after the new user completes 10 legitimate, server-verified rewarded ads.</p>
+      <div id="refStatus" class="notice">0 eligible referrals verified.</div>
+    </section>
+    <section class="card">
+      <h2>History</h2>
+      <div id="history" class="history"><p class="muted">No transactions yet.</p></div>
+    </section>
+    <section class="card links">
+      <button onclick="alert('Terms page placeholder')">Terms & Conditions</button>
+      <button onclick="alert('Privacy page placeholder')">Privacy Policy</button>
+      <button onclick="alert('Help & Support placeholder')">Help & Support</button>
+    </section>
+  </main>
+
+  <nav class="bottom">
+    <button data-page="home" onclick="showPage('home')">🏠<span>Home</span></button>
+    <button data-page="ads" onclick="showPage('ads')">📺<span>Ads</span></button>
+    <button data-page="games" onclick="showPage('games')">🎮<span>Games</span></button>
+    <button data-page="profile" onclick="showPage('profile')">👤<span>Profile</span></button>
+  </nav>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
