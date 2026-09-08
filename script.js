@@ -247,7 +247,7 @@ function openLudo() {
   };
 
   updateBoard();
-        }
+  }
 function addGamePoints(n){state.gamePoints+=n;save();}
 function withdraw(){
  if(state.coins<12000){alert('Withdrawal is locked until you have at least 12,000 eligible coins.');return}
