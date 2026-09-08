@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eafcff">
+  <title>Play & Rewards</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div><div class="eyebrow">PLAY & REWARDS</div><h1 id="page-title">Home</h1></div>
+      <button id="auth-top-btn" class="icon-btn" type="button" aria-label="Profile">⌁</button>
+    </header>
+
+    <main id="main-content" class="content"></main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-page="home" type="button"><span>⌂</span>Home</button>
+      <button class="nav-item" data-page="ads" type="button"><span>▶</span>Ads</button>
+      <button class="nav-item" data-page="games" type="button"><span>◈</span>Games</button>
+      <button class="nav-item" data-page="profile" type="button"><span>◎</span>Profile</button>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="auth-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div class="modal-card">
+      <button id="auth-close" class="modal-close" type="button" aria-label="Close">×</button>
+      <div class="eyebrow">ACCOUNT</div><h2 id="auth-title">Welcome back</h2>
+      <p id="auth-copy" class="muted">Sign in to save rewards, referrals and games.</p>
+      <div class="tabs"><button id="login-tab" class="tab active" type="button">Login</button><button id="signup-tab" class="tab" type="button">Sign up</button></div>
+      <form id="auth-form">
+        <label>Email<input id="auth-email" type="email" autocomplete="email" required></label>
+        <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="6" required></label>
+        <label id="referral-field" class="hidden">Referral code (optional)<input id="auth-referral" type="text" maxlength="32" autocomplete="off"></label>
+        <button class="primary-btn" type="submit"><span id="auth-submit">Login</span></button>
+      </form>
+      <p id="auth-message" class="form-message"></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
