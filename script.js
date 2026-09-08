@@ -29,7 +29,225 @@ function referDemo(){
 }
 function playGame(name){ state.games++; state.gamePoints+=100; save(); alert(name+' complete! +100 Game Points. Game Points have no cash value.'); }
 function startRewardedAd(){ alert('Real rewarded ads require an approved ad provider and secure backend verification. This button will not fake a reward.'); }
-function openLudo(){ showPage('games'); const a=document.getElementById('gameArea'); if(!a)return; a.classList.remove('hidden'); a.innerHTML='<h2>🎲 Ludo vs Computer</h2><p class="muted">Non-wagering mini Ludo. First to 20 wins.</p><div id="ludoStatus" class="notice">Roll the die.</div><div class="board"><div class="cell" id="youPos">YOU<br>0/20</div><div class="cell">🎯</div><div class="cell" id="cpuPos">CPU<br>0/20</div></div><button class="primary" id="rollBtn">Roll 🎲</button>'; let you=0,cpu=0; document.getElementById('rollBtn').onclick=()=>{let d=1+Math.floor(Math.random()*6),cd=1+Math.floor(Math.random()*6);you=Math.min(20,you+d);cpu=Math.min(20,cpu+cd);document.getElementById('youPos').innerHTML='YOU<br>'+you+'/20';document.getElementById('cpuPos').innerHTML='CPU<br>'+cpu+'/20';if(you>=20){addGamePoints(100);document.getElementById('ludoStatus').textContent='You won! +100 Game Points.';document.getElementById('rollBtn').disabled=true}else if(cpu>=20){document.getElementById('ludoStatus').textContent='Computer won. Try again!';document.getElementById('rollBtn').disabled=true}else document.getElementById('ludoStatus').textContent='You rolled '+d+'. Computer rolled '+cd+'.'} }
+function openLudo() {
+  showPage('games');
+
+  const a = document.getElementById('gameArea');
+  if (!a) return;
+
+  a.classList.remove('hidden');
+
+  a.innerHTML = `
+    <h2>🎲 Ludo vs Computer</h2>
+    <p class="muted">Game Points only • No wagering • First player to get all 4 tokens home wins.</p>
+
+    <div id="ludoStatus" class="notice">Your turn — roll the dice!</div>
+
+    <div class="ludo-board">
+      <div class="ludo-home blue-home">
+        <b>YOU</b>
+        <div class="tokens" id="youHome">
+          <button class="token" data-token="0">🔵</button>
+          <button class="token" data-token="1">🔵</button>
+          <button class="token" data-token="2">🔵</button>
+          <button class="token" data-token="3">🔵</button>
+        </div>
+      </div>
+
+      <div class="ludo-track">
+        ${Array.from({length: 40}, (_, i) =>
+          `<div class="track-cell" id="track-${i}">${i + 1}</div>`
+        ).join('')}
+      </div>
+
+      <div class="ludo-home red-home">
+        <b>CPU</b>
+        <div class="tokens" id="cpuHome">
+          <span class="token">🔴</span>
+          <span class="token">🔴</span>
+          <span class="token">🔴</span>
+          <span class="token">🔴</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ludo-controls">
+      <div id="diceDisplay" class="dice">🎲</div>
+      <button class="primary" id="rollBtn">Roll Dice</button>
+    </div>
+
+    <p id="ludoScore">You: 0/4 home • CPU: 0/4 home</p>
+    <button class="secondary" id="newLudoBtn">New Game</button>
+  `;
+
+  let you = [0, 0, 0, 0];
+  let cpu = [0, 0, 0, 0];
+  let dice = 0;
+  let waitingForToken = false;
+  let gameOver = false;
+
+  const status = document.getElementById('ludoStatus');
+  const rollBtn = document.getElementById('rollBtn');
+  const diceDisplay = document.getElementById('diceDisplay');
+  const score = document.getElementById('ludoScore');
+
+  function updateBoard() {
+    document.querySelectorAll('.track-cell').forEach(cell => {
+      cell.classList.remove('you-token', 'cpu-token');
+      cell.textContent = cell.id.replace('track-', '');
+    });
+
+    you.forEach((pos, i) => {
+      if (pos > 0 && pos <= 40) {
+        const cell = document.getElementById('track-' + (pos - 1));
+        if (cell) {
+          cell.classList.add('you-token');
+          cell.textContent = '🔵';
+        }
+      }
+    });
+
+    cpu.forEach(pos => {
+      if (pos > 0 && pos <= 40) {
+        const cell = document.getElementById('track-' + (pos - 1));
+        if (cell) {
+          cell.classList.add('cpu-token');
+          cell.textContent = '🔴';
+        }
+      }
+    });
+
+    score.textContent =
+      `You: ${you.filter(x => x >= 40).length}/4 home • ` +
+      `CPU: ${cpu.filter(x => x >= 40).length}/4 home`;
+
+    document.querySelectorAll('.token').forEach(btn => {
+      btn.classList.remove('movable');
+
+      const i = Number(btn.dataset.token);
+
+      if (
+        !gameOver &&
+        waitingForToken &&
+        you[i] < 40 &&
+        you[i] + dice <= 40
+      ) {
+        btn.classList.add('movable');
+      }
+    });
+  }
+
+  function checkWinner() {
+    if (you.every(x => x >= 40)) {
+      gameOver = true;
+      waitingForToken = false;
+      status.textContent = '🎉 You won! +100 Game Points!';
+      rollBtn.disabled = true;
+
+      if (typeof addGamePoints === 'function') {
+        addGamePoints(100);
+      }
+
+      updateBoard();
+      return true;
+    }
+
+    if (cpu.every(x => x >= 40)) {
+      gameOver = true;
+      waitingForToken = false;
+      status.textContent = '🤖 Computer won. Try again!';
+      rollBtn.disabled = true;
+      updateBoard();
+      return true;
+    }
+
+    return false;
+  }
+
+  function computerTurn() {
+    if (gameOver) return;
+
+    setTimeout(() => {
+      const cd = 1 + Math.floor(Math.random() * 6);
+      diceDisplay.textContent = ['⚀','⚁','⚂','⚃','⚄','⚅'][cd - 1];
+
+      const movable = cpu
+        .map((pos, i) => ({pos, i}))
+        .filter(x => x.pos < 40 && x.pos + cd <= 40);
+
+      if (movable.length) {
+        const choice = movable[Math.floor(Math.random() * movable.length)];
+        cpu[choice.i] += cd;
+      }
+
+      updateBoard();
+
+      if (!checkWinner()) {
+        status.textContent = 'Your turn — roll the dice!';
+        rollBtn.disabled = false;
+      }
+    }, 700);
+  }
+
+  rollBtn.onclick = () => {
+    if (gameOver || waitingForToken) return;
+
+    dice = 1 + Math.floor(Math.random() * 6);
+    diceDisplay.textContent = ['⚀','⚁','⚂','⚃','⚄','⚅'][dice - 1];
+
+    const movable = you
+      .map((pos, i) => ({pos, i}))
+      .filter(x => x.pos < 40 && x.pos + dice <= 40);
+
+    if (!movable.length) {
+      status.textContent = `You rolled ${dice}. No token can move.`;
+      rollBtn.disabled = true;
+
+      setTimeout(() => {
+        if (!gameOver) {
+          status.textContent = 'Computer is thinking...';
+          computerTurn();
+        }
+      }, 600);
+
+      return;
+    }
+
+    waitingForToken = true;
+    rollBtn.disabled = true;
+
+    status.textContent =
+      `You rolled ${dice}. Tap a 🔵 token to move it.`;
+
+    updateBoard();
+  };
+
+  document.querySelectorAll('.token').forEach(btn => {
+    btn.onclick = () => {
+      if (!waitingForToken || gameOver) return;
+
+      const i = Number(btn.dataset.token);
+
+      if (you[i] >= 40 || you[i] + dice > 40) return;
+
+      you[i] += dice;
+      waitingForToken = false;
+
+      updateBoard();
+
+      if (checkWinner()) return;
+
+      status.textContent = 'Computer is thinking...';
+      computerTurn();
+    };
+  });
+
+  document.getElementById('newLudoBtn').onclick = () => {
+    openLudo();
+  };
+
+  updateBoard();
+        }
 function addGamePoints(n){state.gamePoints+=n;save();}
 function withdraw(){
  if(state.coins<12000){alert('Withdrawal is locked until you have at least 12,000 eligible coins.');return}
