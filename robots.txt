@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://REPLACE_WITH_YOUR_DOMAIN/sitemap.xml
+Sitemap: https://panthercast304-eng.github.io/Play-and-Rewards-/
