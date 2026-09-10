@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#130d1f">
+  <title>Plus For You — Rewards</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PLUS FOR YOU</p>
+        <h1 id="headerTitle">Welcome back</h1>
+      </div>
+      <button class="avatar" id="avatarBtn" aria-label="Profile">P</button>
+    </header>
+
+    <main>
+      <section id="auth" class="card auth-card">
+        <div class="brand-mark">🪙</div>
+        <h2>Start earning</h2>
+        <p class="muted">Sign in to track your rewards, games and withdrawals.</p>
+        <input id="email" type="email" placeholder="Email address" autocomplete="email">
+        <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+        <div class="row">
+          <button class="primary" id="login">Login</button>
+          <button class="secondary" id="signup">Create account</button>
+        </div>
+        <p id="msg" class="message"></p>
+      </section>
+
+      <section id="app" hidden>
+        <!-- HOME -->
+        <div id="home" class="page">
+          <div class="card balance-card">
+            <div class="balance-head"><span>Available balance</span><span class="coin-dot">🪙</span></div>
+            <strong id="coins">0</strong>
+            <p><span id="inr">₹0.00</span> estimated value</p>
+          </div>
+
+          <div class="tier-grid">
+            <div class="mini-card"><span>Conversion Tier 1</span><b>10 🪙 = ₹1</b></div>
+            <div class="mini-card"><span>Conversion Tier 2</span><b>10,000 🪙 = ₹1,000</b></div>
+          </div>
+
+          <div class="action-grid">
+            <button class="action-tile" data-page="ads">
+              <span class="icon-box purple">📺</span><span><b>Watch Ads</b><small>Earn reward coins</small></span><i>›</i>
+            </button>
+            <button class="action-tile" data-page="games">
+              <span class="icon-box violet">🎮</span><span><b>Play Games</b><small>Earn game points</small></span><i>›</i>
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="section-head"><h3>Referral progress</h3><button class="text-btn" data-page="referral">View ›</button></div>
+            <div class="stats-row">
+              <div><b id="refs">0</b><span>Eligible</span></div>
+              <div><b>2</b><span>Required</span></div>
+              <div><b id="refPercent">0%</b><span>Progress</span></div>
+            </div>
+            <div class="progress-track"><i id="refBar"></i></div>
+          </div>
+
+          <div class="card">
+            <div class="section-head"><h3>Withdrawal eligibility</h3><span id="wbadge" class="status-pill locked">Locked</span></div>
+            <ul class="checklist">
+              <li id="checkAds"><span>🔒</span> Complete 50 rewarded ads</li>
+              <li id="checkRefs"><span>🔒</span> Get 2 eligible referrals</li>
+              <li id="checkCoins"><span>🔒</span> Reach 12,000 coins</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ADS -->
+        <div id="ads" class="page" hidden>
+          <div class="page-title"><div><p class="eyebrow">EARN</p><h2>Watch Ads</h2></div><span class="round-icon">📺</span></div>
+          <div class="card">
+            <div class="section-head"><span>Daily ad progress</span><b><span id="adcount">0</span>/100</b></div>
+            <div class="progress-track"><i id="bar"></i></div>
+            <p id="admsg" class="muted">Coins are granted only after your approved rewarded-ad provider confirms completion.</p>
+          </div>
+          <div id="adButtons"></div>
+        </div>
+
+        <!-- GAMES -->
+        <div id="games" class="page" hidden>
+          <div class="page-title"><div><p class="eyebrow">PLAY</p><h2>Games</h2></div><span class="round-icon">🎮</span></div>
+          <div class="card points-card">
+            <span class="trophy">🏆</span><div><span class="muted">Game Points</span><strong id="gamePoints">0</strong></div>
+            <small>No cash value</small>
+          </div>
+          <div class="game-grid">
+            <button class="game-tile" id="ludo"><span class="game-icon">🎲</span><span><b>Ludo</b><small>Classic dice</small></span><em>Live</em></button>
+            <button class="game-tile" id="quiz"><span class="game-icon">🧠</span><span><b>Quiz</b><small>Test your mind</small></span><em>Live</em></button>
+            <button class="game-tile" id="tap"><span class="game-icon">👆</span><span><b>Tap Challenge</b><small>Tap for points</small></span><em>Live</em></button>
+            <button class="game-tile" id="memory"><span class="game-icon">🎴</span><span><b>Memory</b><small>Match pairs</small></span><em>Live</em></button>
+            <button class="game-tile" id="daily"><span class="game-icon">📅</span><span><b>Daily Challenge</b><small>New every day</small></span><em>Live</em></button>
+          </div>
+          <div class="card"><div class="section-head"><h3>Leaderboard</h3><span class="muted">Today</span></div>
+            <ol class="leaderboard"><li><b>1</b><span>🏆 NovaPlayer</span><strong>4,820</strong></li><li><b>2</b><span>⭐ PixelKing</span><strong>4,260</strong></li><li><b>3</b><span>🪙 CoinMaster</span><strong>3,940</strong></li><li><b>4</b><span>🎮 You</span><strong id="yourRankPoints">0</strong></li></ol>
+          </div>
+          <div id="game"></div>
+        </div>
+
+        <!-- REFERRAL -->
+        <div id="referral" class="page" hidden>
+          <div class="page-title"><div><p class="eyebrow">BONUS</p><h2>Referral</h2></div><span class="round-icon">🎁</span></div>
+          <div class="card referral-card">
+            <div class="ref-hero">🎁</div><h3>Invite friends, earn rewards</h3>
+            <p class="muted">Your referral becomes eligible after the referred user completes at least 10 legitimate rewarded ads.</p>
+            <label>Enter code</label>
+            <input id="refInput" class="mono" placeholder="ENTER-CODE">
+            <button class="primary wide" id="referNow">🎁 Refer Now</button>
+            <div class="ref-link-row"><span>Your code: <b id="refcode">—</b></span><button id="copy" class="small-btn">Copy</button></div>
+            <p class="fineprint">No self-referrals or duplicate accounts. Rewards require backend/provider verification. Referral rewards are not guaranteed until eligibility is confirmed.</p>
+            <button id="claim" class="secondary wide" disabled>Claim 1,200 Coins</button>
+          </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="profile" class="page" hidden>
+          <div class="page-title"><div><p class="eyebrow">ACCOUNT</p><h2>Profile</h2></div><span class="avatar large">P</span></div>
+          <div class="card profile-card"><p class="muted">Signed in as</p><b id="mail">—</b></div>
+          <div class="subnav"><button class="active" data-profile="overview">Overview</button><button data-profile="withdraw">Withdraw</button><button data-profile="ledger">Ledger</button><button data-profile="more">More</button></div>
+          <div id="profileOverview" class="profile-pane">
+            <div class="settings-list card">
+              <button>⚙️ <span>Settings</span><i>›</i></button>
+              <button>❓ <span>Help</span><i>›</i></button>
+              <button>📄 <span>Terms</span><i>›</i></button>
+              <button>🛡️ <span>Rewards Rules</span><i>›</i></button>
+              <button id="logout" class="danger">🚪 <span>Log out</span><i>›</i></button>
+            </div>
+          </div>
+          <div id="profileWithdraw" class="profile-pane" hidden>
+            <div class="card">
+              <div class="section-head"><h3>Withdraw</h3><span id="wstatus" class="status-pill locked">Locked</span></div>
+              <ul class="checklist"><li id="pcheckAds"><span>🔒</span> 50 ads completed</li><li id="pcheckRefs"><span>🔒</span> 2 referrals eligible</li><li id="pcheckCoins"><span>🔒</span> 12,000 coins available</li></ul>
+              <label>Amount</label><input id="amount" type="number" placeholder="Minimum ₹1,200">
+              <label>Payment method</label><select id="method"><option value="">Select method</option><option>UPI</option><option>Bank transfer</option></select>
+              <label>UPI ID</label><input id="upi" placeholder="name@upi">
+              <button id="withdraw" class="primary wide" disabled>Submit withdrawal</button>
+            </div>
+          </div>
+          <div id="profileLedger" class="profile-pane" hidden>
+            <div class="card"><div class="section-head"><h3>Ledger</h3><span class="muted">Recent</span></div><div id="ledgerList"><div class="empty">No verified transactions yet.</div></div></div>
+          </div>
+          <div id="profileMore" class="profile-pane" hidden>
+            <div class="card"><h3>Rewards Rules</h3><p class="muted">Game Points have no cash value. Real rewards must be verified server-side by an approved provider.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav hidden id="nav">
+      <button data-page="home" class="active"><span>⌂</span><small>Home</small></button>
+      <button data-page="ads"><span>📺</span><small>Ads</small></button>
+      <button data-page="games"><span>🎮</span><small>Games</small></button>
+      <button data-page="profile"><span>👤</span><small>Profile</small></button>
+    </nav>
+  </div>
+  <script src="config.js"></script><script src="script.js"></script>
+</body>
+</html>
