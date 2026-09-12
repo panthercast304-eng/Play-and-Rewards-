@@ -38,24 +38,34 @@
 </main>
 </div>
 <script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script>
+window.onerror=function(msg,src,line,col,err){
+  document.getElementById("msg").textContent="Page error: "+msg+" (line "+line+")";
+};
+window.addEventListener("unhandledrejection",function(e){
+  document.getElementById("msg").textContent="Promise error: "+(e.reason&&e.reason.message?e.reason.message:e.reason);
+});
+</script>
 <script>
 const $=id=>document.getElementById(id);
 const sb=supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
 $("go").onclick=async()=>{
+  $("msg").textContent="";
   const e=$("email").value.trim(), p=$("password").value;
   const {error}=await sb.auth.signInWithPassword({email:e,password:p});
   if(error){$("msg").textContent=error.message;return}
-  const {data:who}=await sb.rpc("debug_whoami");
-  console.log("whoami:",who);
-  if(who && who[0]) $("msg").textContent="Logged in as "+who[0].my_email+" | admin flag seen as: "+who[0].is_admin_flag;
+  const {data:who,error:whoErr}=await sb.rpc("debug_whoami");
+  if(whoErr){$("msg").textContent="whoami error: "+whoErr.message;}
+  else if(who && who[0]){$("msg").textContent="Logged in as "+who[0].my_email+" | admin flag seen as: "+who[0].is_admin_flag;}
+  else{$("msg").textContent="whoami returned no rows.";}
   load();
 };
 
 async function load(){
   const {data:stats,error}=await sb.rpc("get_stats");
-  if(error){$("msg").textContent+=" | get_stats error: "+error.message;return}
+  if(error){$("msg").textContent+=" | get_stats: "+error.message;return}
   $("login").hidden=true; $("dash").hidden=false;
   const s=stats[0];
   $("stats").innerHTML=`
